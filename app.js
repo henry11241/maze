@@ -30,8 +30,7 @@ const walls = [
   Bodies.rectangle(0, height / 2, 2, height, { isStatic: true }),
   Bodies.rectangle(width, height / 2, 2, height, { isStatic: true })
 ]
-Composite.add(world, walls)
-
+Composite.add(world, walls) 
 // Maze  generation
 const generateMaze = () => {
   const grid = Array(cellsVertical).fill(null).map(() => Array(cellsHorizontal).fill(false))
@@ -172,18 +171,39 @@ const generateMaze = () => {
     const { x, y } = ball.velocity
 
     if (event.key === 'w') {
-      Body.setVelocity(ball, { x, y: y - 5 })
+      Body.setVelocity(ball, { x: 0, y: y - 5 })
     }
     if (event.key === 'd') {
-      Body.setVelocity(ball, { x: x + 5, y })
+      Body.setVelocity(ball, { x: x + 5, y: 0 })
     }
     if (event.key === 's') {
-      Body.setVelocity(ball, { x, y: y + 5 })
+      Body.setVelocity(ball, { x: 0, y: y + 5 })
     }
     if (event.key === 'a') {
-      Body.setVelocity(ball, { x: x - 5, y })
+      Body.setVelocity(ball, { x: x - 5, y: 0 })
     }
   })
+  const limitMaxSpeed = () => {
+    let maxSpeed = 5;
+    const { x, y } = ball.velocity
+
+    if (ball.velocity.x > maxSpeed) {
+      Body.setVelocity(ball, { x: maxSpeed, y: 0 });
+    }
+
+    if (ball.velocity.x < -maxSpeed) {
+      Body.setVelocity(ball, { x: -maxSpeed, y: 0 });
+    }
+
+    if (ball.velocity.y > maxSpeed) {
+      Body.setVelocity(ball, { x: 0, y: maxSpeed });
+    }
+
+    if (ball.velocity.y < -maxSpeed) {
+      Body.setVelocity(ball, { x: 0, y: -maxSpeed });
+    }
+  }
+  Events.on(engine, 'beforeUpdate', limitMaxSpeed);
 }
 generateMaze()
 
